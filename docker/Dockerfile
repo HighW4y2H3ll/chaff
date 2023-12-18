@@ -42,7 +42,8 @@ WORKDIR /$llvm_version/build
 RUN cmake ../ -DCMAKE_INSTALL_PREFIX=/$llvm_version/Release -DLLVM_TARGETS_TO_BUILD=X86 \
               -DBUILD_SHARED_LIBS=true -DLLVM_ENABLE_ASSERTIONS=false -DLLVM_ENABLE_RTTI=true \
 #-DLLVM_BUILD_32_BITS=true \
-              -DLLVM_ENABLE_PIC=true -DCMAKE_BUILD_TYPE=Release -DLLVM_TARGET_ARCH=i486-linux-gnu \
+              -DLLVM_ENABLE_PIC=true -DCMAKE_BUILD_TYPE=Release \
+#-DLLVM_TARGET_ARCH=i486-linux-gnu \
               -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" \
               -G "Ninja"
 RUN ninja install
@@ -85,7 +86,7 @@ WORKDIR /
 RUN wget https://github.com/open-source-parsers/jsoncpp/archive/refs/tags/1.7.4.tar.gz
 RUN tar -xzf 1.7.4.tar.gz
 WORKDIR jsoncpp-1.7.4
-RUN cmake -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0" . && make -j && make install && ldconfig
+RUN cmake -DCMAKE_CXX_FLAGS="-D_GLIBCXX_USE_CXX11_ABI=0 -fPIC" . && make -j && make install && ldconfig
 
 # Install protobuf
 WORKDIR /
@@ -114,3 +115,5 @@ RUN CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0' ./configure --prefix=/llvm-3.3-install
 # listen_addresses = 'localhost, 172.17.0.1'
 # wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 # echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql-pgdg.list
+RUN apt install -y libarchive-dev chrpath libssl-dev python3-pip
+RUN pip3 install pyyaml pycparser psycopg2

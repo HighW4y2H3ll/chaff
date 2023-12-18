@@ -18,7 +18,8 @@ from os.path import expandvars
 from colorama import Fore
 from colorama import Style
 
-QCOW_URL = "https://panda.re/qcows/linux/debian/7.3/x86/debian_7.3_x86.qcow"
+QCOW_URL = "https://panda.re/qcows/linux/debian/7.3/x86_64/debian_7.3_x86_64.qcow"
+#QCOW_URL = "https://panda.re/qcows/linux/debian/7.3/x86/debian_7.3_x86.qcow"
 TAR_URL = "ftp://ftp.astron.com/pub/file/file-5.22.tar.gz"
 LAVA_DIR = dirname(abspath(sys.argv[0]))
 os.chdir(LAVA_DIR)
@@ -100,8 +101,10 @@ def main():
         progress("Building host.json")
         # Build host.json
         json_configs = {}
-        json_configs["qemu"] = join(join(PANDA_BUILD_DIR, "i386-softmmu"),
-                                    "qemu-system-i386")
+        #json_configs["qemu"] = join(join(PANDA_BUILD_DIR, "i386-softmmu"),
+        #                            "qemu-system-i386")
+        json_configs["qemu"] = join(join(PANDA_BUILD_DIR, "x86_64-softmmu"),
+                                    "qemu-system-x86_64")
         json_configs["qcow_dir"] = LAVA_DIR
         json_configs["output_dir"] = join(LAVA_DIR, "target_injections")
         json_configs["config_dir"] = join(LAVA_DIR, "target_configs")
