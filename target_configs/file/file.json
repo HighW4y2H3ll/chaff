@@ -8,7 +8,7 @@
 
     "qcow": "wheezy_panda2.qcow2",
     "snapshot": "root",
-    "expect_prompt": "root@debian-i386:~#",
+    "expect_prompt": "root@debian-amd64:~#",
 
     "configure": "./configure --enable-static=yes --enable-shared=no",
     "make": "make",

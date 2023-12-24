@@ -152,8 +152,10 @@ progress("Starting first and only replay, tainting on file open...")
 # process name
 
 if command_args[0].startswith('LD_PRELOAD'):
+    cmdpath = command_args[1]
     proc_name = basename(command_args[1])
 else:
+    cmdpath = command_args[0]
     proc_name = basename(command_args[0])
 
 pandalog = "{}/queries-{}.plog".format(project['output_dir'],
@@ -161,9 +163,16 @@ pandalog = "{}/queries-{}.plog".format(project['output_dir'],
 
 print("pandalog = [%s] " % pandalog)
 
+# generate Dwarf info
+import dwarfdump
+dwarf_cmd = ["dwarfdump", "-dil", cmdpath]
+dwarfout = subprocess32.check_output(dwarf_cmd)
+dwarfdump.parse_dwarfdump(dwarfout, os.path.join(installdir, proc_name))
+
+
 panda_args = {
     'pri': {},
-    'pri_dwarf': {
+    'dwarf2': {
         'proc': proc_name,
         'g_debugpath': installdir,
         'h_debugpath': installdir
