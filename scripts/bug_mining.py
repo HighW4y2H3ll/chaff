@@ -130,8 +130,11 @@ command_args = shlex.split(project['command'].format(
     input_file=input_file_guest))
 shutil.copy(input_file, installdir)
 
+shutil.copytree("/lib/x86_64-linux-gnu", installdir+"/x86_64-linux-gnu")
+prefix_cmds = shlex.split("LD_LIBRARY_PATH={install_dir}/x86_64-linux-gnu {install_dir}/x86_64-linux-gnu/ld-2.24.so".format(install_dir=pipes.quote(installdir), input_file=input_file_guest))
+
 create_recording(qemu_path, project['qcow'], project['snapshot'],
-                 command_args, installdir, isoname,
+                 prefix_cmds+command_args, installdir, isoname,
                  project["expect_prompt"], "ide1-cd0", rr=qemu_use_rr)
 
 try:
@@ -167,7 +170,12 @@ print("pandalog = [%s] " % pandalog)
 import dwarfdump
 dwarf_cmd = ["dwarfdump", "-dil", cmdpath]
 dwarfout = subprocess32.check_output(dwarf_cmd)
-dwarfdump.parse_dwarfdump(dwarfout, os.path.join(installdir, proc_name))
+binpath = os.path.join(installdir, "bin", proc_name)
+if not os.path.exists(binpath):
+    binpath = os.path.join(installdir, "lib", proc_name)
+    if not os.path.exists(binpath):
+        binpath = os.path.join(installdir, proc_name)
+dwarfdump.parse_dwarfdump(dwarfout, binpath)
 
 
 panda_args = {

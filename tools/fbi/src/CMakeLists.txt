@@ -13,7 +13,7 @@ add_library (fbilib
 target_include_directories(fbilib BEFORE
         PUBLIC
         ${PANDA_SRC_PATH}/panda/include
-        ${PANDA_BUILD_DIR}/i386-softmmu
+        ${PANDA_BUILD_DIR}/x86_64-softmmu
         /usr/lib/odb/x86_64-linux-gnu/include
 )
 target_compile_options(fbilib PRIVATE -D_GLIBCXX_USE_CXX11_ABI=0 -DPLOG_READER)
@@ -38,7 +38,7 @@ target_include_directories(fbi BEFORE
         ${CMAKE_CURRENT_SOURCE_DIR}/../../lavaODB/include
         ${CMAKE_CURRENT_SOURCE_DIR}/../../include
         ${PANDA_SRC_PATH}/panda/include
-        ${PANDA_BUILD_DIR}/i386-softmmu
+        ${PANDA_BUILD_DIR}/x86_64-softmmu
         /usr/lib/odb/x86_64-linux-gnu/include
     )
 add_dependencies(fbi lava-odb_x64)
@@ -54,8 +54,8 @@ target_link_libraries(fbi
     jsoncpp
     pq
     protobuf
-    ${PANDA_BUILD_DIR}/i386-softmmu/plog.pb.o
-    ${PANDA_BUILD_DIR}/i386-softmmu/plog.pb-c.o
+    ${PANDA_BUILD_DIR}/x86_64-softmmu/plog.pb.o
+    ${PANDA_BUILD_DIR}/x86_64-softmmu/plog.pb-c.o
 )
 install (TARGETS fbi
          RUNTIME DESTINATION bin
