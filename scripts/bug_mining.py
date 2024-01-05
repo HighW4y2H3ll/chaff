@@ -129,10 +129,31 @@ command_args = shlex.split(project['command'].format(
     install_dir=pipes.quote(installdir),
     input_file=input_file_guest))
 shutil.copy(input_file, installdir)
+with open(os.path.join(installdir, "setup.sh"), 'w') as fd:
+    fd.write("#!/bin/bash\n")
+    fd.write("cp {}/x86_64-linux-gnu/ld-2.24.so /ld.so\n".format(pipes.quote(installdir)))
+os.chmod(os.path.join(installdir, "setup.sh"), 0777)
 
 shutil.copytree("/lib/x86_64-linux-gnu", installdir+"/x86_64-linux-gnu")
-prefix_cmds = shlex.split("LD_LIBRARY_PATH={install_dir}/x86_64-linux-gnu {install_dir}/x86_64-linux-gnu/ld-2.24.so".format(install_dir=pipes.quote(installdir), input_file=input_file_guest))
+prefix_cmds = shlex.split("LD_LIBRARY_PATH={}/x86_64-linux-gnu".format(pipes.quote(installdir)))
 
+# process name
+
+if command_args[0].startswith('LD_PRELOAD'):
+    cmdpath = command_args[1]
+    proc_name = basename(command_args[1])
+else:
+    cmdpath = command_args[0]
+    proc_name = basename(command_args[0])
+
+binpath = os.path.join(installdir, "bin", proc_name)
+if not os.path.exists(binpath):
+    binpath = os.path.join(installdir, "lib", proc_name)
+    if not os.path.exists(binpath):
+        binpath = os.path.join(installdir, proc_name)
+
+# create recording
+os.system("patchelf --set-interpreter /ld.so {}".format(binpath))
 create_recording(qemu_path, project['qcow'], project['snapshot'],
                  prefix_cmds+command_args, installdir, isoname,
                  project["expect_prompt"], "ide1-cd0", rr=qemu_use_rr)
@@ -152,14 +173,6 @@ tick()
 print()
 progress("Starting first and only replay, tainting on file open...")
 
-# process name
-
-if command_args[0].startswith('LD_PRELOAD'):
-    cmdpath = command_args[1]
-    proc_name = basename(command_args[1])
-else:
-    cmdpath = command_args[0]
-    proc_name = basename(command_args[0])
 
 pandalog = "{}/queries-{}.plog".format(project['output_dir'],
                                        os.path.basename(isoname))
@@ -170,11 +183,6 @@ print("pandalog = [%s] " % pandalog)
 import dwarfdump
 dwarf_cmd = ["dwarfdump", "-dil", cmdpath]
 dwarfout = subprocess32.check_output(dwarf_cmd)
-binpath = os.path.join(installdir, "bin", proc_name)
-if not os.path.exists(binpath):
-    binpath = os.path.join(installdir, "lib", proc_name)
-    if not os.path.exists(binpath):
-        binpath = os.path.join(installdir, proc_name)
 dwarfdump.parse_dwarfdump(dwarfout, binpath)
 
 

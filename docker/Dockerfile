@@ -117,3 +117,4 @@ RUN CXXFLAGS='-D_GLIBCXX_USE_CXX11_ABI=0' ./configure --prefix=/llvm-3.3-install
 # echo "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main" | sudo tee /etc/apt/sources.list.d/postgresql-pgdg.list
 RUN apt install -y libarchive-dev chrpath libssl-dev python3-pip dwarfdump libffi-dev
 RUN pip3 install pyyaml pycparser psycopg2 pwntools pathlib2
+RUN apt install -y patchelf
