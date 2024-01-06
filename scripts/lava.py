@@ -719,7 +719,7 @@ def inject_bugs(bug_list, db, lp, host_file, project, args,
         print('Re-configuring...')
         envv = { 'CC':'/llvm-3.6.2/Release/bin/clang',
                 'CXX': '/llvm-3.6.2/Release/bin/clang++',
-                'CFLAGS': '-O0 -m32 -DHAVE_CONFIG_H -g -gdwarf-2 -fno-stack-protector -D_FORTIFY_SOURCE=0 -I. -I.. -I../include -I./src/'}
+                'CFLAGS': '-O0 -DHAVE_CONFIG_H -g -gdwarf-2 -fno-stack-protector -D_FORTIFY_SOURCE=0 -I. -I.. -I../include -I./src/'}
         if project['configure']:
             run_cmd( ' '.join(shlex.split(project['configure']) + ['--prefix=' + lp.bugs_install]),
                     envv, 30, cwd=lp.bugs_build, shell=True )
@@ -738,7 +738,7 @@ def inject_bugs(bug_list, db, lp, host_file, project, args,
 
         # Silence warnings related to adding integers to pointers since we already
         # know that it's unsafe.
-        envv = {"CFLAGS": "-Wno-int-conversion -O0 -m32 -DHAVE_CONFIG_H -g -gdwarf-2 -fno-stack-protector -D_FORTIFY_SOURCE=0 -I. -I.. -I../include -I./src/"}
+        envv = {"CFLAGS": "-Wno-int-conversion -O0 -DHAVE_CONFIG_H -g -gdwarf-2 -fno-stack-protector -D_FORTIFY_SOURCE=0 -I. -I.. -I../include -I./src/"}
         if competition:
             envv["CFLAGS"] += " -DLAVA_LOGGING"
         envv={}
@@ -929,7 +929,7 @@ def inject_bugs(bug_list, db, lp, host_file, project, args,
     make_cmd = project["make"]
     envv = {"CC": "/llvm-3.6.2/Release/bin/clang",
             "CXX": "/llvm-3.6.2/Release/bin/clang++",
-            "CFLAGS": "-Wno-int-conversion -O0 -m32 -DHAVE_CONFIG_H -g -gdwarf-2 -fno-stack-protector -D_FORTIFY_SOURCE=0 -I. -I.. -I../include -I./src/"}
+            "CFLAGS": "-Wno-int-conversion -O0 -DHAVE_CONFIG_H -g -gdwarf-2 -fno-stack-protector -D_FORTIFY_SOURCE=0 -I. -I.. -I../include -I./src/"}
     if competition:
         envv["CFLAGS"] += " -DLAVA_LOGGING"
     (rv, outp) = run_cmd(make_cmd, envv, None, cwd=lp.bugs_build)
