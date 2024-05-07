@@ -2,6 +2,11 @@
 
 These instructions were tested on Ubuntu 22.04.
 
+## Clone the repo
+```
+git clone --recursive https://github.com/HighW4y2H3ll/chaff.git
+```
+
 ## Building chaff
 
 Build the Docker image
@@ -27,8 +32,6 @@ In this shell, build panda and then build the LAVA tools
 python2 ./setup_container.py
 ```
 
-(`panda/setup.sh` may fail in install step but that error is fine.)
-
 ## Preparing host
 
 - `sudo apt install postgresql python-pip libodb-pgsql-2.4 jq`
@@ -44,9 +47,9 @@ python2 ./setup_container.py
     - Reset password by logging into psql.
     - Run docker shell and see if logging in using `psql -h 172.17.0.1 -U postgres` works using the
       password.
+- Run `./init-host.py`
 
 ## Inserting chaff bugs
 
-- `python2 ./init-host.py`
 - `./scripts/lava.sh -ak <target>`
 - For more options, run `./scripts/lava.sh -h`
