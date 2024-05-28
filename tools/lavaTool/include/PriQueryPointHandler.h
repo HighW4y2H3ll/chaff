@@ -69,9 +69,19 @@ struct PriQueryPointHandler : public LavaMatchHandler {
         }
 
         for (const LvalBytes &lval_bytes : map_get_default(extra_siphons_at, ast_loc)) {
+#ifdef SAFE_SIPHON
+            std::string nntests = (createNonNullTests(lval_bytes.lval->ast_name));
+            if (nntests.size() > 0)
+                nntests = nntests + " && ";
+            result_ss << LIf(nntests + lval_bytes.lval->ast_name,
+                    LavaSetExtra(
+                        lval_bytes.lval, lval_bytes.selected,
+                        extra_data_slots.at(lval_bytes)));
+#else
             result_ss << LavaSetExtra(
                     lval_bytes.lval, lval_bytes.selected,
                     extra_data_slots.at(lval_bytes));
+#endif
         }
 
         std::string result = result_ss.str();
@@ -123,6 +133,9 @@ struct PriQueryPointHandler : public LavaMatchHandler {
                             LAsm({ LavaGetExtra(extra_data_slots.at(extra_bytes)) },
                                     { "divl %0" })});
                 } else {
+                    //result_ss << LIf(checker.render(), {
+                    //        LAsm({ LavaGetExtra(extra_data_slots.at(extra_bytes)) },
+                    //                { "divq %0" })});
                     result_ss << LIf(checker.render(), {
                             LIfDef("__x86_64__", {
                             LAsm({ LavaGetExtra(extra_data_slots.at(extra_bytes)) },
@@ -157,6 +170,8 @@ struct PriQueryPointHandler : public LavaMatchHandler {
                             LAssign(LStr("*((long long*)(((char*)lava_chaff_pointer)+0x20))"), LDecimal(24)),
                             LAssign(LStr("*((long long*)(((char*)lava_chaff_pointer)+0x28))"),
                                     LavaGetExtra(extra_data_slots.at(extra_bytes)))
+                            //LAsm({ LavaGetExtra(extra_data_slots.at(extra_bytes)) },
+                            //        { "divq %0" }),
                             }),
                             LBlock({
                             LAssign(LStr("void *lava_chaff_pointer"), LFunc("malloc", {LHex(0x20)})),

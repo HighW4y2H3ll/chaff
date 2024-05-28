@@ -314,7 +314,7 @@ public:
                     << "#define lava_check_const_low_4(slot) "
                     << "(((lava_extra[slot]&0xffff)*0xfe)==0)\n"
                     << "#define lava_check_const_low_5(slot) "
-                    << "(__builtin_popcount(((lava_extra[slot]&0xffff)+1)) == 1)\n"
+                    << "(__builtin_popcount(((lava_extra[slot]&0xffff)|0x10000)) == 1)\n"
                     << "#define lava_check_const_low_6(slot) "
                     << "(__builtin_ctz((lava_extra[slot]&0xffff)|0x10000) >= 16)\n"
 

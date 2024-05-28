@@ -40,7 +40,12 @@ def get_bug_list(args, db, allowed_bugtypes):
         bug_list.append(bug.id)
         #update_db = True
     elif args.buglist:
-        bug_list = eval(args.buglist) # TODO
+        #bug_list = eval(args.buglist) # TODO
+        with open(args.buglist, 'r') as fd:
+            jdat = json.load(fd)
+        bug_list = []
+        for i in range(len(jdat)):
+            bug_list.append(jdat[i]['id'])
         update_db = False
     elif args.many:
         num_bugs_to_inject = int(args.many)
@@ -78,6 +83,9 @@ def get_bugs_parent(lp):
 
     while bugs_parent == "":
         candidate_path = join(lp.bugs_top_dir, str(candidate))
+        if os.path.exists(candidate_path):
+            candidate += 1
+            continue
         if args.noLock:
             # just use 0 always
             bugs_parent = join(candidate_path)

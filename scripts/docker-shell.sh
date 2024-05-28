@@ -55,6 +55,7 @@ docker run --rm -it \
     -v /etc/gshadow:/etc/gshadow:ro \
     -v "$HOME":"$HOME" \
     --cap-add=SYS_PTRACE \
+    --add-host=database:172.17.0.1 \
     $docker_map_args \
     $extradockerargs \
     ${container} sh -c "trap '' PIPE; $cmd"

@@ -252,7 +252,8 @@ if [ $inject -eq 1 ]; then
     if [ "$exitCode" = "null" ]; then
         exitCode="0";
     fi
-    for i in `seq $num_trials`
+    base=`find $logs -name "inject-*.log"|cut -d '-' -f 2|cut -d '.' -f 1|sort -r|head -n 1`
+    for i in `seq $(($base+1)) $(($base+$num_trials))`
     do
         lf="$logs/inject-$i.log"
         truncate "$lf"

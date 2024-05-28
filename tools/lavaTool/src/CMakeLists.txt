@@ -52,7 +52,7 @@ target_include_directories(omg BEFORE
 
 # lavaTool target compiled against llvm, omg, odb odb-pgsql and lava odb
 add_executable(lavaTool lavaTool.cpp)
-target_compile_options(lavaTool PRIVATE -D_GLIBCXX_USE_CXX11_ABI=0 -fno-omit-frame-pointer -O3 -fexceptions -frtti)
+target_compile_options(lavaTool PRIVATE -DSAFE_SIPHON -D_GLIBCXX_USE_CXX11_ABI=0 -fno-omit-frame-pointer -O3 -fexceptions -frtti)
 #set_target_properties(lavaTool PROPERTIES COMPILE_FLAGS "-m32" LINK_FLAGS "-m32 -flto -fuse-ld=gold")
 set_target_properties(lavaTool PROPERTIES LINK_FLAGS "-flto -fuse-ld=gold")
 set_property(TARGET lavaTool PROPERTY CXX_STANDARD 14)
